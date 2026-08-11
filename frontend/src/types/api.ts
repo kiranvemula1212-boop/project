@@ -20,11 +20,15 @@ export interface ColumnDefinition {
   options: EnumOption[];
 }
 
+// ISO-8601 date string ("2026-08-10"), same convention as row-level DATE columns.
+export type IsoDate = string;
+
 export interface ReportSummary {
   id: string;
   name: string;
   description: string;
   category: string;
+  lastUpdated: IsoDate;
   columnCount: number;
 }
 
@@ -33,6 +37,7 @@ export interface ReportMetadata {
   name: string;
   description: string;
   category: string;
+  lastUpdated: IsoDate;
   columns: ColumnDefinition[];
 }
 

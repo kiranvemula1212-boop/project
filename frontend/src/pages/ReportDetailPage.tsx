@@ -11,6 +11,7 @@ import { TableSkeleton } from "@/components/table/TableSkeleton";
 import { useReportData } from "@/hooks/useReportData";
 import { useReportMetadata } from "@/hooks/useReportMetadata";
 import { useReportQuery } from "@/hooks/useReportQuery";
+import { formatDate } from "@/lib/formatDate";
 
 const DEFAULT_PAGE_SIZE = 25;
 
@@ -102,6 +103,9 @@ export function ReportDetailPage() {
       <div className="mt-2">
         <h1 className="text-page-title font-semibold text-ink">{metadata.name}</h1>
         <p className="mt-1 text-body text-ink-muted">{metadata.description}</p>
+        <p className="mt-1 font-mono text-label text-ink-faint">
+          Last updated {formatDate(metadata.lastUpdated)}
+        </p>
       </div>
 
       <ReportToolbar

@@ -9,6 +9,7 @@ import com.enfos.reporting.domain.port.ReportDataSource;
 import com.enfos.reporting.domain.port.ReportModule;
 import com.enfos.reporting.infrastructure.inmemory.InMemoryReportDataSource;
 import com.enfos.reporting.infrastructure.inmemory.JsonSeedLoader;
+import java.time.LocalDate;
 import java.util.List;
 import org.springframework.stereotype.Component;
 
@@ -19,11 +20,13 @@ import org.springframework.stereotype.Component;
 @Component
 class ProjectsReportModule implements ReportModule {
 
-    private final ReportDefinition definition = buildDefinition();
+    private final ReportDefinition definition;
     private final ReportDataSource dataSource;
 
     ProjectsReportModule(JsonSeedLoader seedLoader) {
-        this.dataSource = new InMemoryReportDataSource(seedLoader.load("data/projects.json"));
+        JsonSeedLoader.SeedData seed = seedLoader.load("data/projects.json");
+        this.definition = buildDefinition(seed.lastUpdated());
+        this.dataSource = new InMemoryReportDataSource(seed.rows());
     }
 
     @Override
@@ -36,7 +39,7 @@ class ProjectsReportModule implements ReportModule {
         return dataSource;
     }
 
-    private static ReportDefinition buildDefinition() {
+    private static ReportDefinition buildDefinition(LocalDate lastUpdated) {
         List<ColumnDefinition> columns = List.of(
                 new ColumnDefinition("id", "ID", ColumnType.ID, true, false, FilterType.NONE, List.of()),
                 new ColumnDefinition("name", "Name", ColumnType.TEXT, true, true, FilterType.NONE, List.of()),
@@ -55,6 +58,7 @@ class ProjectsReportModule implements ReportModule {
                 new ColumnDefinition("endDate", "End Date", ColumnType.DATE, true, false, FilterType.NONE, List.of())
         );
         return new ReportDefinition(
-                "projects", "Projects", "Active and historical projects across departments.", "Work", columns);
+                "projects", "Projects", "Active and historical projects across departments.", "Work",
+                lastUpdated, columns);
     }
 }

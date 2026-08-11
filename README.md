@@ -95,18 +95,21 @@ This is a complete, working report module — not a sketch of one:
 ```java
 @Component
 class VendorsReportModule implements ReportModule {
-    private final ReportDefinition definition = new ReportDefinition(
-        "vendors", "Vendors", "Approved vendors and their contract status.", "Operations",
-        List.of(
-            new ColumnDefinition("id", "ID", ColumnType.ID, true, false, FilterType.NONE, List.of()),
-            new ColumnDefinition("name", "Name", ColumnType.TEXT, true, true, FilterType.TEXT, List.of()),
-            new ColumnDefinition("status", "Status", ColumnType.ENUM, true, false, FilterType.ENUM,
-                List.of(new EnumOption("ACTIVE", "Active"), new EnumOption("EXPIRED", "Expired")))
-        ));
+    private final ReportDefinition definition;
     private final ReportDataSource dataSource;
 
     VendorsReportModule(JsonSeedLoader seedLoader) {
-        this.dataSource = new InMemoryReportDataSource(seedLoader.load("data/vendors.json"));
+        JsonSeedLoader.SeedData seed = seedLoader.load("data/vendors.json");
+        this.definition = new ReportDefinition(
+            "vendors", "Vendors", "Approved vendors and their contract status.", "Operations",
+            seed.lastUpdated(),
+            List.of(
+                new ColumnDefinition("id", "ID", ColumnType.ID, true, false, FilterType.NONE, List.of()),
+                new ColumnDefinition("name", "Name", ColumnType.TEXT, true, true, FilterType.TEXT, List.of()),
+                new ColumnDefinition("status", "Status", ColumnType.ENUM, true, false, FilterType.ENUM,
+                    List.of(new EnumOption("ACTIVE", "Active"), new EnumOption("EXPIRED", "Expired")))
+            ));
+        this.dataSource = new InMemoryReportDataSource(seed.rows());
     }
 
     @Override public ReportDefinition definition() { return definition; }
@@ -114,9 +117,11 @@ class VendorsReportModule implements ReportModule {
 }
 ```
 
-Drop `vendors.json` (an array of row objects matching the column keys above) into
-`backend/src/main/resources/data/`, and the report appears on the landing page, sorts,
-filters, and paginates — with zero other changes.
+Drop `vendors.json` into `backend/src/main/resources/data/` — `{ "lastUpdated": "2026-08-10",
+"rows": [ { "id": 1, "name": "...", "status": "ACTIVE" }, ... ] }`, one object per row,
+keyed by the column keys above — and the report appears on the landing page, sorts,
+filters, and paginates, with its "last updated" date sourced from that same file. Zero
+other changes.
 
 ## Swapping the data source
 
@@ -145,7 +150,7 @@ request is asking to touch, because it never sees an unvalidated query.
 
 Base path: `/api/reports`.
 
-- `GET /api/reports` — list every report's summary (id, name, description, category, column count).
+- `GET /api/reports` — list every report's summary (id, name, description, category, last-updated date, column count).
 - `GET /api/reports/{reportId}/metadata` — that report's full column definitions. Emits
   an `ETag`; a matching `If-None-Match` gets a `304`.
 - `GET /api/reports/{reportId}` — row data. Query params:

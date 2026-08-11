@@ -11,6 +11,7 @@ import com.enfos.reporting.domain.model.ReportDefinition;
 import com.enfos.reporting.domain.model.ReportRow;
 import com.enfos.reporting.domain.port.ReportDataSource;
 import com.enfos.reporting.domain.port.ReportModule;
+import java.time.LocalDate;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 
@@ -49,7 +50,8 @@ class ReportRegistryTest {
     private static ReportModule moduleWithId(String id) {
         ColumnDefinition idColumn =
                 new ColumnDefinition("id", "ID", ColumnType.ID, true, false, FilterType.NONE, List.of());
-        ReportDefinition definition = new ReportDefinition(id, id, "description", "category", List.of(idColumn));
+        ReportDefinition definition = new ReportDefinition(
+                id, id, "description", "category", LocalDate.of(2026, 1, 1), List.of(idColumn));
         ReportDataSource dataSource = (def, query) -> new Page<ReportRow>(List.of(), 0, 25, 0);
 
         return new ReportModule() {

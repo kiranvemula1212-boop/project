@@ -1,6 +1,5 @@
 import type { ReactNode } from "react";
-
-const formatter = new Intl.DateTimeFormat("en-US", { dateStyle: "medium" });
+import { formatDate } from "@/lib/formatDate";
 
 export function DateCell(value: unknown): ReactNode {
   // Never the string "null", never a blank cell — an em-dash communicates "intentionally
@@ -8,5 +7,5 @@ export function DateCell(value: unknown): ReactNode {
   if (value == null) {
     return <span className="font-mono text-ink-faint">—</span>;
   }
-  return <span className="font-mono">{formatter.format(new Date(String(value)))}</span>;
+  return <span className="font-mono">{formatDate(String(value))}</span>;
 }

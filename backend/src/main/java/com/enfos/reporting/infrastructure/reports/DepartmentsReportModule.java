@@ -9,6 +9,7 @@ import com.enfos.reporting.domain.port.ReportDataSource;
 import com.enfos.reporting.domain.port.ReportModule;
 import com.enfos.reporting.infrastructure.inmemory.InMemoryReportDataSource;
 import com.enfos.reporting.infrastructure.inmemory.JsonSeedLoader;
+import java.time.LocalDate;
 import java.util.List;
 import org.springframework.stereotype.Component;
 
@@ -19,11 +20,13 @@ import org.springframework.stereotype.Component;
 @Component
 class DepartmentsReportModule implements ReportModule {
 
-    private final ReportDefinition definition = buildDefinition();
+    private final ReportDefinition definition;
     private final ReportDataSource dataSource;
 
     DepartmentsReportModule(JsonSeedLoader seedLoader) {
-        this.dataSource = new InMemoryReportDataSource(seedLoader.load("data/departments.json"));
+        JsonSeedLoader.SeedData seed = seedLoader.load("data/departments.json");
+        this.definition = buildDefinition(seed.lastUpdated());
+        this.dataSource = new InMemoryReportDataSource(seed.rows());
     }
 
     @Override
@@ -36,7 +39,7 @@ class DepartmentsReportModule implements ReportModule {
         return dataSource;
     }
 
-    private static ReportDefinition buildDefinition() {
+    private static ReportDefinition buildDefinition(LocalDate lastUpdated) {
         List<ColumnDefinition> columns = List.of(
                 new ColumnDefinition("id", "ID", ColumnType.ID, true, false, FilterType.NONE, List.of()),
                 new ColumnDefinition("name", "Name", ColumnType.TEXT, true, true, FilterType.NONE, List.of()),
@@ -55,6 +58,7 @@ class DepartmentsReportModule implements ReportModule {
                         List.of())
         );
         return new ReportDefinition(
-                "departments", "Departments", "Organizational departments and their budgets.", "People", columns);
+                "departments", "Departments", "Organizational departments and their budgets.", "People",
+                lastUpdated, columns);
     }
 }

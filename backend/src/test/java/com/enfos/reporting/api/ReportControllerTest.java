@@ -17,6 +17,7 @@ import com.enfos.reporting.domain.model.ColumnDefinition;
 import com.enfos.reporting.domain.model.ColumnType;
 import com.enfos.reporting.domain.model.FilterType;
 import com.enfos.reporting.domain.model.ReportDefinition;
+import java.time.LocalDate;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,8 +40,8 @@ class ReportControllerTest {
 
     private static final ColumnDefinition ID_COLUMN =
             new ColumnDefinition("id", "ID", ColumnType.ID, true, false, FilterType.NONE, List.of());
-    private static final ReportDefinition USERS_DEFINITION =
-            new ReportDefinition("users", "Users", "All users", "People", List.of(ID_COLUMN));
+    private static final ReportDefinition USERS_DEFINITION = new ReportDefinition(
+            "users", "Users", "All users", "People", LocalDate.of(2026, 8, 10), List.of(ID_COLUMN));
 
     @Test
     void listReportsReturnsExpectedShape() throws Exception {
@@ -50,6 +51,7 @@ class ReportControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.data[0].id").value("users"))
                 .andExpect(jsonPath("$.data[0].name").value("Users"))
+                .andExpect(jsonPath("$.data[0].lastUpdated").value("2026-08-10"))
                 .andExpect(jsonPath("$.data[0].columnCount").value(1));
     }
 

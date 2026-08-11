@@ -13,6 +13,7 @@ import com.enfos.reporting.domain.model.SortDirection;
 import com.enfos.reporting.domain.query.FilterCriterion;
 import com.enfos.reporting.domain.query.ReportQuery;
 import com.enfos.reporting.domain.query.SortSpec;
+import java.time.LocalDate;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 
@@ -113,6 +114,7 @@ class QueryValidatorTest {
                 new ColumnDefinition("department", "Department", ColumnType.TEXT, true, false, FilterType.ENUM,
                         List.of(new EnumOption("ENG", "Engineering"), new EnumOption("SALES", "Sales")))
         );
-        return new ReportDefinition("fixtures", "Fixtures", "Test fixture report", "test", columns);
+        return new ReportDefinition(
+                "fixtures", "Fixtures", "Test fixture report", "test", LocalDate.of(2026, 1, 1), columns);
     }
 }

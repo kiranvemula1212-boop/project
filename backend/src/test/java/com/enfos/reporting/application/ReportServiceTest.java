@@ -14,6 +14,7 @@ import com.enfos.reporting.domain.port.ReportDataSource;
 import com.enfos.reporting.domain.port.ReportModule;
 import com.enfos.reporting.domain.query.ReportQuery;
 import com.enfos.reporting.domain.query.SortSpec;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 import org.junit.jupiter.api.Test;
@@ -64,7 +65,9 @@ class ReportServiceTest {
         ColumnDefinition idColumn =
                 new ColumnDefinition("id", "ID", ColumnType.ID, true, false, FilterType.NONE, List.of());
         ReportDefinition definition =
-                new ReportDefinition("fixtures", "Fixtures", "description", "category", List.of(idColumn));
+                new ReportDefinition(
+                        "fixtures", "Fixtures", "description", "category", LocalDate.of(2026, 1, 1),
+                        List.of(idColumn));
         ReportDataSource dataSource = (def, query) -> {
             receivedQuery.set(query);
             return new Page<>(List.of(), query.page(), query.size(), 0);

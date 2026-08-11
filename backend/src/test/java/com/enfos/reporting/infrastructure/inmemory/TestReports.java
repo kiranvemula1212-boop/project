@@ -6,6 +6,7 @@ import com.enfos.reporting.domain.model.EnumOption;
 import com.enfos.reporting.domain.model.FilterType;
 import com.enfos.reporting.domain.model.ReportDefinition;
 import com.enfos.reporting.domain.model.ReportRow;
+import java.time.LocalDate;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -25,7 +26,8 @@ final class TestReports {
                         List.of(new EnumOption("ENG", "Engineering"), new EnumOption("SALES", "Sales"))),
                 new ColumnDefinition("score", "Score", ColumnType.NUMBER, true, false, FilterType.NONE, List.of())
         );
-        return new ReportDefinition("fixtures", "Fixtures", "Test fixture report", "test", columns);
+        return new ReportDefinition(
+                "fixtures", "Fixtures", "Test fixture report", "test", LocalDate.of(2026, 1, 1), columns);
     }
 
     static ReportRow row(String id, String name, String note, String department, Integer score) {

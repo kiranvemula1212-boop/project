@@ -2,9 +2,16 @@ package com.enfos.reporting.api.dto;
 
 import com.enfos.reporting.domain.model.ColumnDefinition;
 import com.enfos.reporting.domain.model.ReportDefinition;
+import java.time.LocalDate;
 import java.util.List;
 
-public record ReportMetadata(String id, String name, String description, String category, List<ColumnDefinition> columns) {
+public record ReportMetadata(
+        String id,
+        String name,
+        String description,
+        String category,
+        LocalDate lastUpdated,
+        List<ColumnDefinition> columns) {
 
     public static ReportMetadata from(ReportDefinition definition) {
         return new ReportMetadata(
@@ -12,6 +19,7 @@ public record ReportMetadata(String id, String name, String description, String 
                 definition.name(),
                 definition.description(),
                 definition.category(),
+                definition.lastUpdated(),
                 definition.columns());
     }
 }

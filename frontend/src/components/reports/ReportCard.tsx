@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { formatDate } from "@/lib/formatDate";
 import type { ReportSummary } from "@/types/api";
 
 interface ReportCardProps {
@@ -15,7 +16,11 @@ export function ReportCard({ report }: ReportCardProps) {
     >
       <h3 className="text-card-title font-medium text-ink">{report.name}</h3>
       <p className="mt-1 line-clamp-2 text-table-body text-ink-muted">{report.description}</p>
-      <div className="mt-3 font-mono text-label text-ink-faint">{report.columnCount} columns</div>
+      <div className="mt-3 flex items-center gap-2 font-mono text-label text-ink-faint">
+        <span>{report.columnCount} columns</span>
+        <span aria-hidden="true">·</span>
+        <span>Updated {formatDate(report.lastUpdated)}</span>
+      </div>
     </Link>
   );
 }

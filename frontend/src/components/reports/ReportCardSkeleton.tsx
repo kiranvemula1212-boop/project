@@ -8,7 +8,7 @@ export function ReportCardSkeleton() {
       <Skeleton className="h-5 w-2/3" />
       <Skeleton className="mt-2 h-[18px] w-full" />
       <Skeleton className="mt-1 h-[18px] w-3/4" />
-      <Skeleton className="mt-3 h-4 w-20" />
+      <Skeleton className="mt-3 h-4 w-40" />
     </div>
   );
 }
