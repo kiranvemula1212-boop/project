@@ -1,0 +1,98 @@
+[
+  {
+    "id": 1,
+    "name": "Engineering",
+    "manager": "Jason Perez",
+    "employeeCount": 10,
+    "location": "Austin, TX",
+    "annualBudget": 2866294.9
+  },
+  {
+    "id": 2,
+    "name": "Sales",
+    "manager": "Jason Turner",
+    "employeeCount": 10,
+    "location": "Denver, CO",
+    "annualBudget": 3674598.15
+  },
+  {
+    "id": 3,
+    "name": "Marketing",
+    "manager": "Wei Scott",
+    "employeeCount": 10,
+    "location": "Seattle, WA",
+    "annualBudget": 3948152.57
+  },
+  {
+    "id": 4,
+    "name": "Finance",
+    "manager": "Laura Jones",
+    "employeeCount": 10,
+    "location": "Chicago, IL",
+    "annualBudget": 3186122.35
+  },
+  {
+    "id": 5,
+    "name": "Human Resources",
+    "manager": "Sandra Edwards",
+    "employeeCount": 10,
+    "location": "Atlanta, GA",
+    "annualBudget": 3434812.64
+  },
+  {
+    "id": 6,
+    "name": "Customer Success",
+    "manager": "Sharon Morales",
+    "employeeCount": 12,
+    "location": "Boston, MA",
+    "annualBudget": 3482150.15
+  },
+  {
+    "id": 7,
+    "name": "Product",
+    "manager": "Leila Kim",
+    "employeeCount": 9,
+    "location": "Austin, TX",
+    "annualBudget": 2577944.26
+  },
+  {
+    "id": 8,
+    "name": "Legal",
+    "manager": "William Weber",
+    "employeeCount": 10,
+    "location": "Denver, CO",
+    "annualBudget": 3907237.33
+  },
+  {
+    "id": 9,
+    "name": "Operations",
+    "manager": "Anthony Green",
+    "employeeCount": 9,
+    "location": "Seattle, WA",
+    "annualBudget": 3176920.77
+  },
+  {
+    "id": 10,
+    "name": "IT",
+    "manager": "Joshua Baker",
+    "employeeCount": 10,
+    "location": "Chicago, IL",
+    "annualBudget": 2563968.23
+  },
+  {
+    "id": 11,
+    "name": "Design",
+    "manager": "Fatima Khan",
+    "employeeCount": 9,
+    "location": "Atlanta, GA",
+    "annualBudget": 3576005.84
+  },
+  {
+    "id": 12,
+    "name": "Data & Analytics",
+    "manager": "Ryan Ali",
+    "employeeCount": 11,
+    "location": "Boston, MA",
+    "annualBudget": 374413.04
+  }
+]
