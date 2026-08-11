@@ -9,18 +9,31 @@ no frontend change required.
 
 ## Run it
 
-Prerequisites: Docker only.
+One command builds and starts both the frontend and the backend — no local Java,
+Maven, or Node install needed, and nothing else to configure or set up first.
+
+**Prerequisite:** Docker Engine 20.10+ with the Compose v2 plugin (bundled with current
+Docker Desktop; on Linux, `docker compose version` should print `v2.x`).
 
 ```
 docker compose up --build
 ```
 
-Open http://localhost:3000.
+(equivalently: `make up`, a thin wrapper around the same command)
+
+Open http://localhost:3000. `Ctrl-C` then `docker compose down` (or `make down`) to stop.
+
+This single command builds both images from their multi-stage Dockerfiles, starts the
+backend, waits for its healthcheck to pass, then starts the frontend — all
+dependencies, environment variables, and inter-service wiring (the frontend's Nginx
+config proxies `/api` to the backend container by service name) are already in
+`docker-compose.yml`, `backend/Dockerfile`, and `frontend/Dockerfile`. There is no
+`.env` file to create and no port to configure.
 
 ### Run without Docker
 
-Prerequisites: Java 21, Node 20+ (the Maven wrapper is included, so no local Maven
-install is needed).
+For local iteration only — not required to run the app. Prerequisites: Java 21, Node
+20+ (the Maven wrapper is included, so no local Maven install is needed).
 
 ```
 # terminal 1
