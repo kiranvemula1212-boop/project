@@ -6,6 +6,7 @@ import com.enfos.reporting.domain.model.SortDirection;
 import com.enfos.reporting.domain.query.FilterCriterion;
 import com.enfos.reporting.domain.query.ReportQuery;
 import com.enfos.reporting.domain.query.SortSpec;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
+import org.springframework.web.util.UriUtils;
 
 /**
  * Builds a {@link ReportQuery} from raw request parameters, kept out of the controller so
@@ -108,9 +110,15 @@ class ReportQueryArgumentResolver implements HandlerMethodArgumentResolver {
             }
             List<String> values = new ArrayList<>();
             for (String raw : entry.getValue()) {
+                // Each value was percent-encoded (JS encodeURIComponent) before being
+                // comma-joined by the client, specifically so a value containing a
+                // literal comma — e.g. a "City, ST" location — survives the split
+                // intact instead of being torn into two bogus values. UriUtils.decode,
+                // not URLDecoder, because URLDecoder treats '+' as a space (form-encoding
+                // semantics), which does not match encodeURIComponent's output.
                 for (String v : raw.split(",", -1)) {
                     if (!v.isBlank()) {
-                        values.add(v);
+                        values.add(UriUtils.decode(v, StandardCharsets.UTF_8));
                     }
                 }
             }

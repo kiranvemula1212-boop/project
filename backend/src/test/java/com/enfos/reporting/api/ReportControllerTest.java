@@ -1,5 +1,6 @@
 package com.enfos.reporting.api;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
@@ -16,10 +17,15 @@ import com.enfos.reporting.application.ReportingProperties;
 import com.enfos.reporting.domain.model.ColumnDefinition;
 import com.enfos.reporting.domain.model.ColumnType;
 import com.enfos.reporting.domain.model.FilterType;
+import com.enfos.reporting.domain.model.Page;
 import com.enfos.reporting.domain.model.ReportDefinition;
+import com.enfos.reporting.domain.model.ReportRow;
+import com.enfos.reporting.domain.query.FilterCriterion;
+import com.enfos.reporting.domain.query.ReportQuery;
 import java.time.LocalDate;
 import java.util.List;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -75,6 +81,23 @@ class ReportControllerTest {
                 .andExpect(status().isBadRequest())
                 .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
                 .andExpect(jsonPath("$.errors[0]").value("Unknown column 'nope' on report 'users'."));
+    }
+
+    @Test
+    void filterValueContainingALiteralCommaSurvivesEncodingRoundTrip() throws Exception {
+        // "Austin, TX" contains the same character used to separate multiple filter
+        // values ("filter.location=v1,v2"), so the client must percent-encode each value
+        // before joining. This asserts the resolver decodes it back to the exact original
+        // value — not split into "Austin" and " TX" — regression test for that bug.
+        ArgumentCaptor<ReportQuery> queryCaptor = ArgumentCaptor.forClass(ReportQuery.class);
+        when(reportService.getData(eq("departments"), queryCaptor.capture()))
+                .thenReturn(new Page<ReportRow>(List.of(), 0, 25, 0));
+
+        mockMvc.perform(get("/api/reports/departments").param("filter.location", "Austin%2C%20TX"))
+                .andExpect(status().isOk());
+
+        assertThat(queryCaptor.getValue().filters())
+                .containsExactly(new FilterCriterion("location", List.of("Austin, TX")));
     }
 
     @Test

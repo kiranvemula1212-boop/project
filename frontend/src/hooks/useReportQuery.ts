@@ -50,7 +50,13 @@ export function useReportQuery(defaultSize: number): UseReportQueryResult {
       }
       const columnKey = key.slice(FILTER_PREFIX.length);
       const raw = searchParams.get(key) ?? "";
-      result[columnKey] = raw.split(",").filter((v) => v !== "");
+      // Each value was percent-encoded before joining (see setFilter) specifically so a
+      // value containing a literal comma — e.g. "Austin, TX" — can't be mistaken for two
+      // separate values when split back apart.
+      result[columnKey] = raw
+        .split(",")
+        .filter((v) => v !== "")
+        .map(decodeURIComponent);
     }
     return result;
   }, [searchParams]);
@@ -136,7 +142,7 @@ export function useReportQuery(defaultSize: number): UseReportQueryResult {
         if (values.length === 0) {
           params.delete(`${FILTER_PREFIX}${columnKey}`);
         } else {
-          params.set(`${FILTER_PREFIX}${columnKey}`, values.join(","));
+          params.set(`${FILTER_PREFIX}${columnKey}`, values.map(encodeURIComponent).join(","));
         }
       });
     },

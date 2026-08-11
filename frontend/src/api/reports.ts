@@ -29,7 +29,9 @@ function toSearchParams(query: ReportQueryParams): URLSearchParams {
 
   for (const [columnKey, values] of Object.entries(query.filters)) {
     if (values.length > 0) {
-      params.set(`filter.${columnKey}`, values.join(","));
+      // Percent-encode each value before joining — a value containing a literal comma
+      // (e.g. a "City, ST" location) must not be mistaken for two OR'd values.
+      params.set(`filter.${columnKey}`, values.map(encodeURIComponent).join(","));
     }
   }
 
