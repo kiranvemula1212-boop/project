@@ -4,11 +4,11 @@
 
 - **No login, no user accounts.** I wasn't asked to build auth, so I made every report
   visible to anyone who can reach the app. In a real company deployment I'd obviously
-  want to control who sees what — I'm calling that out as a known gap, not something I
+  want to control who sees what I'm calling that out as a known gap, not something I
   missed.
 - **Mock data is fine, no real database needed.** I was told in-memory data was
   acceptable, so I loaded everything from JSON files into memory when the app starts.
-  I don't save anything anywhere — if I restart the app, it comes back exactly the
+  I don't save anything anywhere if I restart the app, it comes back exactly the
   same. If I were turning this into a real product, my next step would be pointing it
   at an actual database instead, and I structured the code so that swap doesn't touch
   anything else (I explain how in the README's "Swapping the data source" section).
@@ -17,7 +17,7 @@
   was asked for (a department on the Users report, a budget on the Departments report)
   because they made the reports more useful without changing what was asked for.
 - **The data is realistic but made up.** I generated synthetic names, emails, and
-  numbers — there's no real person or company data anywhere. But I made sure it's
+  numbers there's no real person or company data anywhere. But I made sure it's
   internally consistent: every manager and every project owner I listed is a real
   person who actually exists elsewhere in the data, not a random unconnected name.
 
@@ -30,20 +30,20 @@ component, and I have the backend tell it what columns exist and how to treat ea
 (is it a number? a date? sortable? filterable?). The upside: if I add a fourth report
 later, it's one new file, not a new page. The downside: the code is a little more
 abstract to read at first, because you won't find a literal `department.name`
-reference anywhere in my table code — I drive all of it from the metadata instead.
+reference anywhere in my table code  I drive all of it from the metadata instead.
 
 **I made the URL the single source of truth for what you're looking at.** I store
 every filter, sort, search term, and page number in the browser's address bar, not
 hidden in the app's memory. That means you can copy a filtered URL, send it to someone
 else, and they'll see exactly the same filtered view I saw. It also means the back
-button works the way you'd expect. This is mostly invisible to a user — it's really a
+button works the way you'd expect. This is mostly invisible to a user it's really a
 decision I made about where state lives, specifically so the screen and the URL can
 never quietly disagree with each other.
 
 **I made search behave differently in two places, on purpose.** On the homepage, I
-filter the report list instantly as you type, with no delay — because the list of
+filter the report list instantly as you type, with no delay because the list of
 reports is small and already loaded, there's nothing to wait for. Inside a report, I
-wait about a third of a second after you stop typing before I ask the server — because
+wait about a third of a second after you stop typing before I ask the server  because
 that search has to fetch real data over the network, and I didn't want to fire a
 request on every keystroke, which would be wasteful and would feel laggy, not faster.
 
@@ -86,7 +86,7 @@ through the app myself, not just by reading my own code back:
    succeed. I fixed it by telling that library not to retry that specific kind of
    failure.
 3. I noticed dates were displaying one day earlier than they should have, depending on
-   timezone — a classic date-parsing mistake I'd made. I fixed it in one shared place
+   timezone a classic date-parsing mistake I'd made. I fixed it in one shared place
    so I can't reintroduce it anywhere I add a new date display later.
 4. I'd built the table header to stay pinned in place while you scroll down a long
    report, but I'd also put `overflow: hidden` on the box around the table (to keep its
