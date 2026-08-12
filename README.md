@@ -4,8 +4,56 @@ An internal reporting portal: pick a report from a landing page, then sort, filt
 search, and page through it. Adding a new report is one backend module and a seed file —
 no frontend change required.
 
-![Landing page](docs/screenshots/landing.png)
-![Report view](docs/screenshots/report-detail.png)
+![Landing page](docs/screenshots/chromium-01-landing-desktop.png)
+![Report view, filtered and sorted](docs/screenshots/chromium-04-users-filtered-sorted.png)
+
+More screenshots below — states, breakpoints, and both Chromium and Firefox side by
+side. Plain-language notes on what I assumed and traded off while building this:
+[docs/NOTES.md](docs/NOTES.md).
+
+<details>
+<summary><strong>Full screenshot gallery (18 images: states × breakpoints × two browser engines)</strong></summary>
+
+**States** (Chromium, desktop)
+
+| | |
+|---|---|
+| Landing | ![Landing](docs/screenshots/chromium-01-landing-desktop.png) |
+| Landing, instant search | ![Landing search](docs/screenshots/chromium-02-landing-search.png) |
+| Report, unfiltered | ![Users default](docs/screenshots/chromium-03-users-default.png) |
+| Report, filtered + sorted (active query bar) | ![Users filtered](docs/screenshots/chromium-04-users-filtered-sorted.png) |
+| Multi-select filter dropdown open | ![Filter dropdown](docs/screenshots/chromium-05-users-filter-dropdown-open.png) |
+| Empty state — filter matches nothing | ![Empty filtered](docs/screenshots/chromium-06-users-empty-filtered.png) |
+| Departments — fewer than one page | ![Departments](docs/screenshots/chromium-07-departments-small-dataset.png) |
+| Projects — nullable end date renders as — | ![Projects](docs/screenshots/chromium-08-projects-nullable-dates.png) |
+| Unknown report — 404 panel | ![404](docs/screenshots/chromium-09-unknown-report-404.png) |
+| Network failure — distinct from a 4xx | ![Network error](docs/screenshots/chromium-10-network-error.png) |
+
+**Breakpoints** (Chromium)
+
+| 768px (tablet, still table layout) | 390px (mobile, card layout) |
+|---|---|
+| ![Landing tablet](docs/screenshots/chromium-11-landing-tablet.png) | ![Landing mobile](docs/screenshots/chromium-13-landing-mobile.png) |
+| ![Users tablet](docs/screenshots/chromium-12-users-tablet.png) | ![Users mobile filtered](docs/screenshots/chromium-14-users-mobile-filtered.png) |
+
+**Same states, Firefox** — pixel-identical to Chromium, confirming the layout doesn't
+depend on one rendering engine's quirks (checked with Playwright's Firefox/Gecko build,
+not just "should work in theory"):
+
+| | |
+|---|---|
+| Landing | ![Firefox landing](docs/screenshots/firefox-01-landing-desktop.png) |
+| Filtered + sorted | ![Firefox filtered](docs/screenshots/firefox-04-users-filtered-sorted.png) |
+| Mobile landing | ![Firefox mobile](docs/screenshots/firefox-13-landing-mobile.png) |
+| Mobile filtered | ![Firefox mobile filtered](docs/screenshots/firefox-14-users-mobile-filtered.png) |
+
+*Safari/WebKit: not independently screenshotted — Playwright's WebKit build wouldn't
+launch in the sandbox this was built in (a known compatibility limit tied to that
+sandbox's OS version, unrelated to the app). Nothing in the CSS or JS is
+Chromium/Firefox-specific, but I want to be honest that I don't have a direct
+screenshot proving Safari specifically, only Blink and Gecko.*
+
+</details>
 
 ## Run it
 

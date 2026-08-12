@@ -160,7 +160,10 @@ export function ReportDetailPage() {
 
         {dataQuery.data && dataQuery.data.data.length > 0 && (
           <>
-            <div className="hidden overflow-hidden rounded-card border border-border bg-surface md:block">
+            {/* max-h + overflow-auto, not just overflow-hidden: the sticky header needs
+                THIS element to be the actual scrolling ancestor, or "sticky" has nothing
+                real to stick against and silently scrolls away with the page. */}
+            <div className="hidden max-h-[70vh] overflow-auto rounded-card border border-border bg-surface md:block">
               <DataTable
                 columns={metadata.columns}
                 rows={dataQuery.data.data}
