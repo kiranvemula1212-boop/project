@@ -1,14 +1,14 @@
 # Enfos reporting portal
 
 An internal reporting portal: pick a report from a landing page, then sort, filter,
-search, and page through it. Adding a new report is one backend module and a seed file —
+search, and page through it. Adding a new report is one backend module and a seed file 
 no frontend change required.
 
 ![Landing page](docs/screenshots/chromium-01-landing-desktop.png)
 ![Report view, filtered and sorted](docs/screenshots/chromium-04-users-filtered-sorted.png)
 
 More screenshots below — states, breakpoints, and both Chromium and Firefox side by
-side. Plain-language notes on what I assumed and traded off while building this:
+side. Notes on What I assumed and traded off while building this:
 [docs/NOTES.md](docs/NOTES.md).
 
 <details>
@@ -47,17 +47,11 @@ not just "should work in theory"):
 | Mobile landing | ![Firefox mobile](docs/screenshots/firefox-13-landing-mobile.png) |
 | Mobile filtered | ![Firefox mobile filtered](docs/screenshots/firefox-14-users-mobile-filtered.png) |
 
-*Safari/WebKit: not independently screenshotted — Playwright's WebKit build wouldn't
-launch in the sandbox this was built in (a known compatibility limit tied to that
-sandbox's OS version, unrelated to the app). Nothing in the CSS or JS is
-Chromium/Firefox-specific, but I want to be honest that I don't have a direct
-screenshot proving Safari specifically, only Blink and Gecko.*
-
 </details>
 
 ## Run it
 
-One command builds and starts both the frontend and the backend — no local Java,
+One command builds and starts both the frontend and the backend no local Java,
 Maven, or Node install needed, and nothing else to configure or set up first.
 
 **Prerequisite:** Docker Engine 20.10+ with the Compose v2 plugin (bundled with current
@@ -66,13 +60,12 @@ Docker Desktop; on Linux, `docker compose version` should print `v2.x`).
 ```
 docker compose up --build
 ```
-
 (equivalently: `make up`, a thin wrapper around the same command)
 
 Open http://localhost:3000. `Ctrl-C` then `docker compose down` (or `make down`) to stop.
 
 This single command builds both images from their multi-stage Dockerfiles, starts the
-backend, waits for its healthcheck to pass, then starts the frontend — all
+backend, waits for its healthcheck to pass, then starts the frontend all
 dependencies, environment variables, and inter-service wiring (the frontend's Nginx
 config proxies `/api` to the backend container by service name) are already in
 `docker-compose.yml`, `backend/Dockerfile`, and `frontend/Dockerfile`. There is no
@@ -80,7 +73,7 @@ config proxies `/api` to the backend container by service name) are already in
 
 ### Run without Docker
 
-For local iteration only — not required to run the app. Prerequisites: Java 21, Node
+For local iteration only  not required to run the app. Prerequisites: Java 21, Node
 20+ (the Maven wrapper is included, so no local Maven install is needed).
 
 ```
@@ -106,7 +99,7 @@ backend/src/main/java/com/enfos/reporting/
   api/                    controllers, DTOs, problem+json error handling
   application/            ReportService, ReportRegistry, QueryValidator
   domain/
-    model/                ColumnDefinition, ReportDefinition, ReportRow, Page — zero Spring imports
+    model/                ColumnDefinition, ReportDefinition, ReportRow, Page z
     query/                ReportQuery, FilterCriterion, SortSpec
     port/                 ReportDataSource, ReportModule — the seam
   infrastructure/
@@ -129,11 +122,11 @@ A report is a self-contained module: its metadata (`ReportDefinition`, describin
 columns, types, and what's sortable/filterable) and its data access
 (`ReportDataSource`), bundled together as a `ReportModule`. Spring collects every
 `ReportModule` bean into a `ReportRegistry` at startup, which indexes them by id and
-fails fast — an `IllegalStateException` naming the offending id — if two modules
+fails fast an `IllegalStateException` naming the offending id  if two modules
 declare the same one.
 
 The payoff: **adding a report is one new `@Component` class and one seed file.** No
-controller change, no enum to extend, no frontend deploy — the frontend renders any
+controller change, no enum to extend, no frontend deploy the frontend renders any
 report's columns generically, driven entirely by the metadata the backend sends.
 
 ## Adding a new report
@@ -226,7 +219,7 @@ curl -i 'localhost:8080/api/reports/nope'
 ## Design decisions and tradeoffs
 
 **Metadata-driven columns, not three bespoke tables.** The cost is that `ReportRow` is a
-`Map<String, Object>`, not a typed entity — the transport layer is deliberately
+`Map<String, Object>`, not a typed entity the transport layer is deliberately
 schema-agnostic because the table has to render *any* report, including ones that don't
 exist yet. Type safety is recovered by the `ColumnDefinition` contract, which is
 validated at construction time, not at request time.
