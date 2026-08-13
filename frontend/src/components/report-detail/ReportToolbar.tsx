@@ -40,6 +40,12 @@ export function ReportToolbar({
 
   const filterableColumns = columns.filter((column) => column.filterType !== "NONE");
 
+  // Search only ever covers columns the backend declared searchable (RowPredicateFactory
+  // enforces the same scope server-side) — say so in the box itself, rather than letting
+  // someone type a department or status into it and get zero results with no explanation.
+  const searchableLabels = columns.filter((column) => column.searchable).map((column) => column.label);
+  const searchPlaceholder = searchableLabels.length > 0 ? `Search ${searchableLabels.join(", ")}…` : "Search…";
+
   return (
     <div className="flex flex-wrap items-center justify-between gap-3 py-3">
       <div className="flex flex-wrap items-center gap-2">
@@ -47,8 +53,8 @@ export function ReportToolbar({
           value={draftSearch}
           onChange={(event) => setDraftSearch(event.target.value)}
           onClear={() => setDraftSearch("")}
-          placeholder="Search…"
-          aria-label="Search this report"
+          placeholder={searchPlaceholder}
+          aria-label={`Search this report by ${searchableLabels.join(", ") || "text"}`}
           className="w-56"
         />
         {filterableColumns.map((column) => {

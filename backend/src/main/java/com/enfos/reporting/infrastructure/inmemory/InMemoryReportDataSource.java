@@ -25,7 +25,7 @@ public final class InMemoryReportDataSource implements ReportDataSource {
     @Override
     public Page<ReportRow> fetch(ReportDefinition definition, ReportQuery query) {
         Predicate<ReportRow> predicate = RowPredicateFactory.searchPredicate(definition, query.search())
-                .and(RowPredicateFactory.filterPredicate(query.filters()));
+                .and(RowPredicateFactory.filterPredicate(definition, query.filters()));
 
         List<ReportRow> filtered = rows.stream().filter(predicate).toList();
 

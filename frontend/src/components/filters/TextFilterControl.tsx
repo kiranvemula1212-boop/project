@@ -26,8 +26,8 @@ export function TextFilterControl({ column, values, onChange }: FilterControlPro
       value={draft}
       onChange={(event) => setDraft(event.target.value)}
       onClear={() => setDraft("")}
-      placeholder={column.label}
-      aria-label={`Filter by ${column.label}`}
+      placeholder={`${column.label} contains…`}
+      aria-label={`Filter by ${column.label}, matching any part of the value`}
       className="w-40"
     />
   );

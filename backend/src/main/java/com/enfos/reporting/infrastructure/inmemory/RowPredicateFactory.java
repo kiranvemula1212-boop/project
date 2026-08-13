@@ -1,6 +1,7 @@
 package com.enfos.reporting.infrastructure.inmemory;
 
 import com.enfos.reporting.domain.model.ColumnDefinition;
+import com.enfos.reporting.domain.model.FilterType;
 import com.enfos.reporting.domain.model.ReportDefinition;
 import com.enfos.reporting.domain.model.ReportRow;
 import com.enfos.reporting.domain.query.FilterCriterion;
@@ -33,13 +34,33 @@ final class RowPredicateFactory {
         });
     }
 
-    static Predicate<ReportRow> filterPredicate(FilterCriterion criterion) {
+    static Predicate<ReportRow> filterPredicate(ReportDefinition definition, FilterCriterion criterion) {
         List<String> values = criterion.values();
         if (values.isEmpty()) {
             return row -> true;
         }
-        // Exact match, not "contains" — a filter narrows to declared values (enum options
-        // or an allowlisted text value), unlike search which looks for a substring.
+
+        // ENUM filters select from a fixed, declared set of values — exact match is
+        // correct there. TEXT filters are free-typed by the user, so exact match is a
+        // trap: typing a partial or differently-cased value would silently match
+        // nothing, with no way for the user to tell why. Match ENUM and TEXT filters
+        // the way each control actually invites the user to type into it.
+        ColumnDefinition column = definition.column(criterion.columnKey())
+                .orElseThrow(() -> new IllegalStateException(
+                        "Unknown column '" + criterion.columnKey() + "' reached the data source unvalidated."));
+
+        if (column.filterType() == FilterType.TEXT) {
+            List<String> needles = values.stream().map(v -> v.toLowerCase(Locale.ROOT)).toList();
+            return row -> {
+                Object value = row.value(criterion.columnKey());
+                if (value == null) {
+                    return false;
+                }
+                String haystack = String.valueOf(value).toLowerCase(Locale.ROOT);
+                return needles.stream().anyMatch(haystack::contains);
+            };
+        }
+
         return row -> {
             Object value = row.value(criterion.columnKey());
             String stringValue = value == null ? null : String.valueOf(value);
@@ -47,10 +68,10 @@ final class RowPredicateFactory {
         };
     }
 
-    static Predicate<ReportRow> filterPredicate(List<FilterCriterion> criteria) {
+    static Predicate<ReportRow> filterPredicate(ReportDefinition definition, List<FilterCriterion> criteria) {
         Predicate<ReportRow> combined = row -> true;
         for (FilterCriterion criterion : criteria) {
-            combined = combined.and(filterPredicate(criterion));
+            combined = combined.and(filterPredicate(definition, criterion));
         }
         return combined;
     }

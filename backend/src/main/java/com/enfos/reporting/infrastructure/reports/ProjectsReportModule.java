@@ -43,8 +43,11 @@ class ProjectsReportModule implements ReportModule {
         List<ColumnDefinition> columns = List.of(
                 new ColumnDefinition("id", "ID", ColumnType.ID, true, false, FilterType.NONE, List.of()),
                 new ColumnDefinition("name", "Name", ColumnType.TEXT, true, true, FilterType.NONE, List.of()),
+                // searchable=true here to match the Users report's treatment of the same
+                // column — a department name is free-text-like enough that typing it into
+                // the search box is a natural first instinct, not just the ENUM dropdown.
                 new ColumnDefinition(
-                        "department", "Department", ColumnType.TEXT, true, false, FilterType.ENUM,
+                        "department", "Department", ColumnType.TEXT, true, true, FilterType.ENUM,
                         DepartmentOptions.ALL),
                 new ColumnDefinition("owner", "Owner", ColumnType.TEXT, true, true, FilterType.NONE, List.of()),
                 new ColumnDefinition("status", "Status", ColumnType.ENUM, true, false, FilterType.ENUM, List.of(
