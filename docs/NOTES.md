@@ -62,11 +62,6 @@ about, easier to link to a specific page, and the report sizes I'm working with 
 
 - **Login / permissions** — I wasn't asked for this, and it would need a real user
   system to be meaningful, so I left it out rather than build something half-real.
-- **Exporting to CSV** — this would be a genuinely small addition on top of what I
-  already built (the same validated query, just written out as CSV instead of JSON),
-  but I wasn't asked for it, so I didn't add it speculatively.
-- **Remembering which columns you hid last time** — I don't have anywhere to store
-  that without a login system, so I left it out.
 - **A real database** — I built the code so this is a clean swap later (see the
   README's "Swapping the data source" section for exactly what I'd need to do), but
   actually building and testing a database adapter was more than I thought this
