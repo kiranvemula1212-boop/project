@@ -216,48 +216,6 @@ curl -i 'localhost:8080/api/reports/nope'
 #  "traceId":"..."}
 ```
 
-## Design decisions and tradeoffs
-
-**Metadata-driven columns, not three bespoke tables.** The cost is that `ReportRow` is a
-`Map<String, Object>`, not a typed entity the transport layer is deliberately
-schema-agnostic because the table has to render *any* report, including ones that don't
-exist yet. Type safety is recovered by the `ColumnDefinition` contract, which is
-validated at construction time, not at request time.
-
-**Offset pagination, not cursor.** Offset (`page`/`size`) is simpler to reason about, to
-link to, and to build a page-size selector against, and it's the right choice for
-bounded, moderate-sized reports like these. It would stop being the right choice for a
-report with unbounded growth or where rows are inserted/deleted while a user pages
-through — cursor pagination avoids the "page drifts as data changes underneath you"
-problem, at the cost of losing "jump to page 7."
-
-**The stable sort tiebreaker.** Every comparator chain ends with an ascending compare on
-the identity column, even when no sort was requested. Without it, rows with equal sort
-keys can reorder between page requests — invisible with a handful of test rows, and a
-real bug with 120.
-
-**Metadata as a separate, cacheable endpoint** rather than embedded in every row
-response. Schema and data have different lifetimes: the client caches metadata
-indefinitely (`staleTime: Infinity`) and refetches rows on every query change. The cost
-is one extra request on first open; the client fires it in parallel with the data
-request, not in sequence.
-
-**Client-side search on the landing page, server-side search in the table.** The same
-"search" problem gets two different answers, deliberately: the landing page's report
-list is small and already loaded, so filtering it client-side is strictly faster than a
-round trip. A report's *rows* are not preloaded — only the current page is — so search
-has to hit the server.
-
-**URL as the single source of truth for query state.** Page, sort, filters, and search
-all live in the URL's search params, not component state. A filtered view is shareable,
-the back button works, and a refresh preserves position — because there is exactly one
-place this state can live, so it cannot desync from what's on screen.
-
-**Raw values over the wire, never preformatted display strings.** The API sends
-`1250000`, not `"$1,250,000"`. Formatting is a presentation concern handled by `Intl` on
-the client; sending display strings would be very hard to walk back once a consumer
-depends on them.
-
 ## Deliberately out of scope
 
 - **Auth and RBAC** — every report is visible to every caller. A real deployment would
