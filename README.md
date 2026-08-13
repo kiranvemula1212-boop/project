@@ -216,22 +216,6 @@ curl -i 'localhost:8080/api/reports/nope'
 #  "traceId":"..."}
 ```
 
-## Deliberately out of scope
-
-- **Auth and RBAC** — every report is visible to every caller. A real deployment would
-  add a Spring Security filter chain and per-report authorization checks in
-  `ReportService`; nothing in the port design blocks that.
-- **CSV export** — would be a new controller endpoint reusing the same validated
-  `ReportQuery` and streaming `ReportRow`s through a CSV writer instead of JSON.
-- **Column visibility persistence** — no per-user preference storage exists yet; would
-  need a user identity to key it on, which auth doesn't exist for either.
-- **Virtualized rows** — at 25–200 rows per page this isn't a performance problem yet.
-  Worth adding if a report's max page size grows substantially.
-- **A caching tier** — the in-memory adapter is already as fast as caching would make
-  it. A real JDBC adapter behind a slow database is where a cache would earn its keep.
-- **A live JDBC adapter** — the port is designed for it (see "Swapping the data
-  source"), but building and testing one was out of scope for this exercise.
-
 ## Testing
 
 The query engine (`RowPredicateFactory`, `RowComparatorFactory`,
